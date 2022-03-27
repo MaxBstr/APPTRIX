@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
+
+from clients.processors import WatermarkProcessor
+
 
 class ClientManager(BaseUserManager):
 
@@ -50,7 +55,6 @@ class ClientManager(BaseUserManager):
 
 
 class Client(AbstractBaseUser):
-
     # Custom fields
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=40)
@@ -62,7 +66,11 @@ class Client(AbstractBaseUser):
         FEMALE = 1
 
     gender = models.IntegerField(choices=GenderChoices.choices)
-    avatar = models.ImageField(upload_to='clients/avatars', null=True, blank=True)
+    avatar = ProcessedImageField(
+        upload_to=f'clients/avatars/',
+        processors=[ResizeToFill(300, 300), WatermarkProcessor()],
+        blank=True, null=True
+    )
 
     objects = ClientManager()
 

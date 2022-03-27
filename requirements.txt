@@ -1,6 +1,8 @@
 asgiref==3.5.0
 Django==3.2.12
+django-appconf==1.0.5
 django-filter==21.1
+django-imagekit==4.1.0
 django-rest-framework==0.1.0
 djangorestframework==3.13.1
 flake8==4.0.1
@@ -9,6 +11,7 @@ importlib-metadata==4.2.0
 Jinja2==3.0.3
 MarkupSafe==2.1.1
 mccabe==0.6.1
+pilkit==2.0
 Pillow==9.0.1
 psycopg2==2.9.3
 psycopg2-binary==2.9.3
@@ -16,6 +19,7 @@ pycodestyle==2.8.0
 pyflakes==2.4.0
 python-dotenv==0.20.0
 pytz==2022.1
+six==1.16.0
 sqlparse==0.4.2
 typing_extensions==4.1.1
 whitenoise==6.0.0
