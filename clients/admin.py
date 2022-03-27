@@ -5,24 +5,27 @@ from clients.models import Client
 
 
 class ClientAdmin(UserAdmin):
-
     model = Client
-    list_display = ('email', 'username', 'first_name', 'last_name',
+    list_display = ('id', 'email', 'username', 'first_name', 'last_name',
                     'gender', 'avatar', 'date_joined', 'last_login',
                     'is_admin', 'is_staff')
-    list_filter = ('email', 'username')
-    search_fields = ('email', 'username', 'gender')
     readonly_fields = ('date_joined', 'last_login')
+
+    list_filter = ('gender', 'is_staff', 'date_joined')
+    search_fields = ('email', 'username')
     ordering = ('date_joined',)
     filter_horizontal = ()
     fieldsets = (
         ('Auth info', {'fields': ('username', 'email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'gender', 'avatar')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_admin', 'is_superuser')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
-
-    add_fieldsets = fieldsets[:3]  # exclude 'Important dates'
+    add_fieldsets = (
+        ('Auth info', {'fields': ('username', 'email', 'password1', 'password2')}),
+                    ) + fieldsets[1:3]  # extend 'Auth info' and exclude 'Important dates'
 
 
 admin.site.register(Client, ClientAdmin)
+
+

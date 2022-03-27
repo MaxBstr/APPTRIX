@@ -148,8 +148,6 @@ Scripts/
 
 # Static and media packages
 static/
-clients/static/
 media/
-
-#
-.env
+static_cdn/
+media_cdn/

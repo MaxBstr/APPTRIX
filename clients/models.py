@@ -1,21 +1,19 @@
-from string import digits
-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
 class ClientManager(BaseUserManager):
 
-    def create_user(self, email, username, first_name, last_name, gender, password=None):
+    def create_user(self, email, username, first_name, last_name, gender, password=None, **extra_fields):
         # Data validation
         if not email:
             raise ValueError('Clients must have the email address')
         if not username:
             raise ValueError('Clients must have the username')
-        if not first_name or digits in first_name:
-            raise ValueError('Clients must have the first_name without any digits')
-        if not last_name or digits in last_name:
-            raise ValueError('Clients must have the second_name without any digits')
+        if not first_name:
+            raise ValueError('Clients must have the first_name')
+        if not last_name:
+            raise ValueError('Clients must have the second_name')
         if not gender:
             raise ValueError('Clients must have gender')
 
@@ -24,7 +22,8 @@ class ClientManager(BaseUserManager):
             username=username,
             first_name=first_name,
             last_name=last_name,
-            gender=gender
+            gender=gender,
+            **extra_fields
         )
 
         user.set_password(password)
@@ -63,7 +62,7 @@ class Client(AbstractBaseUser):
         FEMALE = 1
 
     gender = models.IntegerField(choices=GenderChoices.choices)
-    avatar = models.ImageField(upload_to='clients/avatars')
+    avatar = models.ImageField(upload_to='clients/avatars', null=True, blank=True)
 
     objects = ClientManager()
 
@@ -77,11 +76,14 @@ class Client(AbstractBaseUser):
 
     # Auth configuration
     USERNAME_FIELD = 'email'  # Login field
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'gender']
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name', 'gender')
 
     class Meta:
         app_label = 'clients'
         db_table = 'clients'
+        verbose_name = 'client'
+        verbose_name_plural = 'clients'
+        ordering = ('date_joined',)
 
     # Utility stuff
     def __str__(self):
