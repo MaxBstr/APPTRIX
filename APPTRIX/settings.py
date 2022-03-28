@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     # 3rd party libraries
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     'imagekit',
 
     # custom apps
@@ -125,9 +126,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 
 WATERMARK_URL = os.path.join(BASE_DIR, 'watermark', 'watermark.png')
 
-# Default primary key field type
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 # DRF conf
 REST_FRAMEWORK = {
@@ -150,3 +148,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = os.environ.get('EMAIL_PORT')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

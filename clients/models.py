@@ -72,7 +72,7 @@ class Client(AbstractBaseUser):
     avatar = ProcessedImageField(
         upload_to='clients/avatars/',
         processors=[ResizeToFill(300, 300), WatermarkProcessor()],
-        blank=True, null=True
+        blank=True, null=True,
     )
 
     objects = ClientManager()
@@ -96,15 +96,8 @@ class Client(AbstractBaseUser):
         verbose_name_plural = 'clients'
         ordering = ('date_joined',)
 
-    # Utility stuff
     def __str__(self):
         return self.email
-
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-
-    def has_module_perms(self, app_label):
-        return True
 
 
 class Match(models.Model):

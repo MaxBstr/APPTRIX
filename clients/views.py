@@ -1,7 +1,9 @@
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.authtoken.models import Token
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import CreateAPIView
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -10,16 +12,19 @@ from clients.models import Client, Match
 from clients.utils import send_mail
 
 
-class ClientCreateAPIView(CreateAPIView):
+class ClientModelViewSet(ModelViewSet):
 
     """
-        Creates user and generating auth token
+        Creates user and generating auth token while POST create request
+        Returns list with filtering capability while GET list request
     """
 
     serializer_class = ClientSerializer
     queryset = Client.objects.all()
     parser_classes = [FormParser, MultiPartParser]
     permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['gender', 'first_name', 'last_name']
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)

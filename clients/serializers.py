@@ -5,6 +5,10 @@ from clients.models import Client, Match
 
 class ClientSerializer(serializers.ModelSerializer):
 
+    """
+        Serializer for creating clients
+    """
+
     email = serializers.EmailField()
 
     class Meta:
@@ -39,6 +43,10 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class MatchSerializer(serializers.ModelSerializer):
+
+    """
+        Serializer for creating Matches
+    """
 
     sender = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
