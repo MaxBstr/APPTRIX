@@ -1,9 +1,9 @@
 from django.urls import path
 
-from clients.views import ClientCreateAPIView, DetailClientAPIView
+from clients import views
 
 
 urlpatterns = [
-    path('clients/create', ClientCreateAPIView.as_view(), name='client_create'),
-    path('clients/detail/<int:pk>', DetailClientAPIView.as_view(), name='detail_view'),
+    path('clients/create', views.ClientCreateAPIView.as_view(), name='client_create'),
+    path('clients/<int:pk>/match', views.MatchCreateAPIView.as_view(), name='match_view')
 ]

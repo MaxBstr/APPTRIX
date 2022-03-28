@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from clients.models import Client
+from clients.models import Client, Match
 
 
 class ClientAdmin(UserAdmin):
@@ -29,3 +29,8 @@ class ClientAdmin(UserAdmin):
 admin.site.register(Client, ClientAdmin)
 
 
+class MatchAdmin(admin.ModelAdmin):
+    list_display = ('id', 'sender', 'recipient')
+
+
+admin.site.register(Match, MatchAdmin)
