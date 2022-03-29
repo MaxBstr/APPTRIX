@@ -20,10 +20,6 @@ class ClientManager(BaseUserManager):
             raise ValueError('Clients must have the first_name')
         if not last_name:
             raise ValueError('Clients must have the second_name')
-        if not gender:
-            raise ValueError('Clients must have gender')
-        if not extra_fields['latitude'] or not extra_fields['longitude']:
-            raise ValueError('Clients must have geo location coordinates')
 
         user = self.model(
             email=self.normalize_email(email),
