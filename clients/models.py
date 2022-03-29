@@ -20,6 +20,8 @@ class ClientManager(BaseUserManager):
             raise ValueError('Clients must have the first_name')
         if not last_name:
             raise ValueError('Clients must have the second_name')
+        if gender not in [0, 1]:
+            raise ValueError('Unexpected gender')
 
         user = self.model(
             email=self.normalize_email(email),
