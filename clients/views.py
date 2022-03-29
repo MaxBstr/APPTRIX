@@ -1,8 +1,7 @@
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.generics import CreateAPIView, ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.generics import CreateAPIView
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,21 +9,18 @@ from rest_framework import status
 from clients.serializers import ClientSerializer, MatchSerializer
 from clients.models import Client, Match
 from clients.utils import send_mail
+from clients.filters import ClientFilter
 
 
-class ClientModelViewSet(ModelViewSet):
-
+class CreateClientAPIView(CreateAPIView):
     """
-        Creates user and generating auth token while POST create request
-        Returns list with filtering capability while GET list request
+        Creates user and generating auth token
     """
 
     serializer_class = ClientSerializer
     queryset = Client.objects.all()
     parser_classes = [FormParser, MultiPartParser]
     permission_classes = [AllowAny]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['gender', 'first_name', 'last_name']
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -40,8 +36,21 @@ class ClientModelViewSet(ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MatchCreateAPIView(CreateAPIView):
+class GetClientListAPIView(ListAPIView):
+    """
+        Returns list with filtering capability
+        Available filter fields:
+            gender, first_name, last_name, distance
+    """
 
+    serializer_class = ClientSerializer
+    queryset = Client.objects.all()
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filter_class = ClientFilter
+
+
+class CreateMatchAPIView(CreateAPIView):
     """
         Handling matches -> creates Match object
         If double match -> send message on email to both
@@ -55,10 +64,13 @@ class MatchCreateAPIView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         sender = request.user
         recipient = Client.objects.get(pk=kwargs['pk'])
-        serializer = MatchSerializer(data={**request.data},
-                                     context={'request': request,
-                                              'recipient': recipient
-                                              })
+        serializer = MatchSerializer(
+            data={**request.data},
+            context={
+                'request': request,
+                'recipient': recipient
+            }
+        )
 
         if serializer.is_valid(raise_exception=True):
             serializer.save()

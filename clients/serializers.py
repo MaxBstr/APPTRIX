@@ -4,22 +4,26 @@ from clients.models import Client, Match
 
 
 class ClientSerializer(serializers.ModelSerializer):
-
     """
         Serializer for creating clients
     """
 
     email = serializers.EmailField()
+    latitude = serializers.DecimalField(max_digits=8, decimal_places=6)
+    longitude = serializers.DecimalField(max_digits=9, decimal_places=6)
 
     class Meta:
         model = Client
         fields = [
             'username', 'first_name', 'last_name',
-            'email', 'avatar', 'gender', 'password'
+            'email', 'avatar', 'gender', 'password',
+            'latitude', 'longitude'
         ]
         extra_kwargs = {
             'password': {'write_only': True},
-            'avatar': {'write_only': True}
+            'avatar': {'write_only': True},
+            'latitude': {'write_only': True},
+            'longitude': {'write_only': True},
         }
 
     def create(self, validated_data):
@@ -29,7 +33,9 @@ class ClientSerializer(serializers.ModelSerializer):
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             gender=validated_data['gender'],
-            avatar=validated_data['avatar']
+            avatar=validated_data['avatar'],
+            latitude=validated_data['latitude'],
+            longitude=validated_data['longitude']
         )
         client.set_password(validated_data['password'])
         client.save()
@@ -43,7 +49,6 @@ class ClientSerializer(serializers.ModelSerializer):
 
 
 class MatchSerializer(serializers.ModelSerializer):
-
     """
         Serializer for creating Matches
     """

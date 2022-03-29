@@ -4,7 +4,6 @@ from PIL import Image
 
 
 class WatermarkProcessor:
-
     """
         Pastes watermark to avatar image before adding to database
     """

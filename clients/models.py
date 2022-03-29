@@ -22,6 +22,8 @@ class ClientManager(BaseUserManager):
             raise ValueError('Clients must have the second_name')
         if not gender:
             raise ValueError('Clients must have gender')
+        if not extra_fields['latitude'] or not extra_fields['longitude']:
+            raise ValueError('Clients must have geo location coordinates')
 
         user = self.model(
             email=self.normalize_email(email),
@@ -55,9 +57,19 @@ class ClientManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    def get_geo_coordinates(self, pk):
+
+        """
+        :param pk: - client id
+        :return: client's coords
+        """
+
+        instance = self.get(pk=pk)
+        data = (instance.latitude, instance.longitude)
+        return data
+
 
 class Client(AbstractBaseUser):
-
     # Custom fields
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=40)
@@ -73,6 +85,18 @@ class Client(AbstractBaseUser):
         upload_to='clients/avatars/',
         processors=[ResizeToFill(300, 300), WatermarkProcessor()],
         blank=True, null=True,
+    )
+
+    # Geo fields
+    latitude = models.DecimalField(  # [-90.000000, 90.000000]
+        max_digits=8,
+        decimal_places=6,
+        null=True
+    )
+    longitude = models.DecimalField(  # [-180.000000, 180.000000]
+        max_digits=9,
+        decimal_places=6,
+        null=True
     )
 
     objects = ClientManager()
@@ -96,12 +120,18 @@ class Client(AbstractBaseUser):
         verbose_name_plural = 'clients'
         ordering = ('date_joined',)
 
+    # Utility stuff
     def __str__(self):
         return self.email
 
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
+
+    def has_module_perms(self, app_label):
+        return True
+
 
 class Match(models.Model):
-
     sender = models.ForeignKey(
         Client,
         on_delete=models.CASCADE,

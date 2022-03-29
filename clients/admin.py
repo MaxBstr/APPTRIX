@@ -19,11 +19,12 @@ class ClientAdmin(UserAdmin):
         ('Auth info', {'fields': ('username', 'email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'gender', 'avatar')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_admin', 'is_superuser')}),
+        ('GeoInfo', {'fields': ('latitude', 'longitude')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
     add_fieldsets = (
-        ('Auth info', {'fields': ('username', 'email', 'password1', 'password2')}),
-                    ) + fieldsets[1:3]  # extend 'Auth info' and exclude 'Important dates'
+                        ('Auth info', {'fields': ('username', 'email', 'password1', 'password2')}),
+                    ) + fieldsets[1:4]  # extend 'Auth info' and exclude 'Important dates'
 
 
 admin.site.register(Client, ClientAdmin)
