@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import django_heroku
 from dotenv import load_dotenv
 
 
@@ -8,8 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'test'
-DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '[::1]']
+DEBUG = False
+ALLOWED_HOSTS = ['https://apptrix-test-proj.herokuapp.com/', '127.0.0.1', 'localhost', '[::1]']
 
 
 # Application definition
@@ -74,15 +75,11 @@ WSGI_APPLICATION = 'APPTRIX.wsgi.application'
 AUTH_USER_MODEL = 'clients.Client'
 
 
-# Database PostgreSQL
+# Database conf
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('DB_ENGINE'),
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT')
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -113,11 +110,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Media Files)
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'media')
-]
-
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
 
@@ -152,3 +144,7 @@ EMAIL_USE_SSL = False
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Heroku conf
+django_heroku.settings(locals())

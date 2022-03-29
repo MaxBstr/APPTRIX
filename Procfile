@@ -1,0 +1,1 @@
+web: gunicorn APPTRIX.wsgi --log-file -
