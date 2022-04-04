@@ -1,9 +1,13 @@
-from django.db.models import QuerySet, F
+from django.db.models.functions import ACos, Radians, Cos, Sin
+from django.db.models import (
+    QuerySet, F,
+    ExpressionWrapper, FloatField
+)
 
 from django_filters import rest_framework as filters
 from django_filters import FilterSet
+from math import radians
 
-from clients.utils import get_great_circle_distance
 from clients.models import Client
 
 
@@ -16,12 +20,25 @@ class ClientFilter(FilterSet):
 
     def get_nearest_clients(self, queryset: QuerySet, name: str, dist_value: int):
         sender_id = self.request.user.id
-        sender_la, sender_lo = Client.objects.get_geo_coordinates(pk=sender_id)
+        sender_la, sender_lo = map(radians, Client.objects.get_geo_coordinates(pk=sender_id))
+        earth_radius = 6_400_000
 
-        queryset = queryset.exclude(pk=sender_id).alias(
-            lat=F('latitude'), long=F('longitude'),
-            distance=get_great_circle_distance(F('lat'), F('long'), sender_la, sender_lo)
-        ).exculde(distance__lte=dist_value).order_by('distance')
+        queryset = (
+            queryset.exclude(pk=sender_id)
+            .alias(
+                rad_lat=Radians('latitude'),
+                rad_long=Radians('longitude'),
+                distance=ExpressionWrapper(
+                    ACos(
+                        Cos('rad_lat') * Cos(sender_la) * Cos(F('rad_long') - sender_lo)
+                        + Sin('rad_lat') * Sin(sender_la)
+                    ) * earth_radius,
+                    output_field=FloatField()
+                )
+            )
+            .exclude(distance__gte=dist_value)
+            .order_by('distance')
+        )
 
         return queryset
 

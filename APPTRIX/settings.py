@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'test'
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['apptrix-test-proj.herokuapp.com', '127.0.0.1', 'localhost', '[::1]']
 
 

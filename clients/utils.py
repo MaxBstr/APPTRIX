@@ -33,7 +33,7 @@ def get_great_circle_distance(la_1, lo_1, la_2, lo_2):
 
     earth_radius = 6_400_000  # in metres
 
-    la_1, lo_1 = map(radians, (la_1, lo_1))
+    la_1, lo_1 = map(radians, (float(la_1), float(lo_1)))
     la_2, lo_2 = map(radians, (la_2, lo_2))
     coefficient = acos(
         cos(la_1) * cos(la_2) * cos(lo_1 - lo_2) +
